@@ -114,7 +114,20 @@ public class BookingDao implements Dao {
         ps.setInt(3, currentBookingSingleton.getBooking().getAmount_of_people());
         ps.setInt(4, currentBookingSingleton.getBooking().getCustomer().getId());
 
-        int Booking_id = ps.executeUpdate();
+        int affectedRows = ps.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating booking failed, no rows affected.");
+        }
+
+        ResultSet rs = ps.getGeneratedKeys();
+
+        int Booking_id = -1;
+
+        if (rs.next()) {
+            Booking_id = rs.getInt(1);
+        }
+
 
         System.out.println("Booking saved");
         System.out.println("booking id: " + Booking_id);
