@@ -1,10 +1,10 @@
 package com.monkeygang.mindfactorybooking.Dao;
 
+import com.monkeygang.mindfactorybooking.Objects.Booking;
 import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
 import com.monkeygang.mindfactorybooking.Objects.Customer;
 import com.monkeygang.mindfactorybooking.Objects.Organization;
 import com.monkeygang.mindfactorybooking.utility.ConnectionSingleton;
-import com.monkeygang.mindfactorybooking.Objects.Booking;
 
 import java.io.IOException;
 import java.sql.*;
@@ -28,9 +28,39 @@ public class BookingDao implements Dao {
     }
 
     @Override
-    public Optional get(long id) {
+    public Optional get(long id) throws SQLException {
+
+
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM booking WHERE id = ?");
+        ps.setLong(1, id);
+
+        ResultSet rs = ps.executeQuery();
+
+        rs.next();
+
         return Optional.empty();
+
     }
+
+    public List<Booking> getAllBookingsFromDate(Timestamp startTime, Timestamp endTime) throws SQLException, IOException {
+
+        List<Booking> bookings = getAll();
+        List<Booking> bookingsFromDate = new ArrayList<>();
+
+
+        for (Booking booking : bookings) {
+
+
+            if (booking.getStartTime().after(startTime) && booking.getEndTime().before(endTime)){
+                bookingsFromDate.add(booking);
+            }
+        }
+
+        return bookingsFromDate;
+    }
+
+
+
 
     public Booking getFromTimeStamps(Timestamp startTime, Timestamp endTime) throws SQLException, IOException {
 
@@ -71,9 +101,13 @@ public class BookingDao implements Dao {
                     rs.getInt("amount_of_visitors"),
                     //TODO: make null safe
 
+                    (Customer) customerDao.get(rs.getInt("customer_id")).get(),
+                    rs.getTime("arrival_time"),
+                    rs.getTime("departure_time"),
+                    rs.getBoolean("is_transport_public"))
 
+            ;
 
-                    (Customer) customerDao.get(rs.getInt("customer_id")).get());
 
             allBookings.add(booking);
         }
@@ -82,6 +116,8 @@ public class BookingDao implements Dao {
         return allBookings;
 
     }
+
+
 
     public PreparedStatement generatePreparedStatement(PreparedStatement ps, Object o) throws SQLException {
 
@@ -103,7 +139,7 @@ public class BookingDao implements Dao {
 
         System.out.println("saving booking");
 
-        PreparedStatement ps = con.prepareStatement("INSERT INTO booking VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement ps = con.prepareStatement("INSERT INTO booking VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
         CurrentBookingSingleton currentBookingSingleton = CurrentBookingSingleton.getInstance();
 
@@ -113,6 +149,9 @@ public class BookingDao implements Dao {
         ps.setTimestamp(2, currentBookingSingleton.getBooking().getEndTime());
         ps.setInt(3, currentBookingSingleton.getBooking().getAmount_of_people());
         ps.setInt(4, currentBookingSingleton.getBooking().getCustomer().getId());
+        ps.setTime(5, currentBookingSingleton.getBooking().getArrival_time());
+        ps.setTime(6, currentBookingSingleton.getBooking().getDeparture_time());
+        ps.setBoolean(7, currentBookingSingleton.getBooking().isIs_transport_public());
 
         int affectedRows = ps.executeUpdate();
 
@@ -173,6 +212,10 @@ public class BookingDao implements Dao {
 
         booking_cateringDAO.deleteByBookingId(booking.getId());
 
+        Booking_ToolsDao booking_toolsDao = new Booking_ToolsDao();
+
+        booking_toolsDao.deleteByBookingId(booking.getId());
+
         ps.setInt(1, booking.getId());
         ps.execute();
 
@@ -180,13 +223,19 @@ public class BookingDao implements Dao {
 
     public Organization getOrganisation(Booking booking) throws SQLException, IOException {
 
+
+
         CustomerDao customerDao = new CustomerDao();
 
         Customer customer = (Customer) customerDao.get(booking.getCustomer().getId()).get();
 
+
+
         OrganisationDao organisationDao = new OrganisationDao();
 
         return (Organization) organisationDao.get(customer.getOrganisation().getId()).get();
+
+
 
 
     }

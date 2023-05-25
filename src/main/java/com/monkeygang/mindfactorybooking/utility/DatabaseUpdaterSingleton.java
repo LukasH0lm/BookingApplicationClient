@@ -1,13 +1,7 @@
 package com.monkeygang.mindfactorybooking.utility;
 
-import com.monkeygang.mindfactorybooking.Dao.BookingDao;
-import com.monkeygang.mindfactorybooking.Dao.Booking_ActivityDao;
-import com.monkeygang.mindfactorybooking.Dao.Booking_CateringDao;
-import com.monkeygang.mindfactorybooking.Dao.CustomerDao;
-import com.monkeygang.mindfactorybooking.Objects.Booking;
-import com.monkeygang.mindfactorybooking.Objects.Catering;
-import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
-import com.monkeygang.mindfactorybooking.Objects.Customer;
+import com.monkeygang.mindfactorybooking.Dao.*;
+import com.monkeygang.mindfactorybooking.Objects.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -22,7 +16,8 @@ public class DatabaseUpdaterSingleton {
     private static Catering catering;
 
 
-    private DatabaseUpdaterSingleton(){}
+    private DatabaseUpdaterSingleton() {
+    }
 
 
     public static synchronized DatabaseUpdaterSingleton getInstance() {
@@ -56,6 +51,16 @@ public class DatabaseUpdaterSingleton {
             return false;
         }
 
+
+       /* if (currentBookingSingleton.getCurrentRedskaber().isEmpty()) {
+            System.out.println("redskaber is null");
+            return false;
+        }*/
+
+        //transport is never null
+        //catering and activity is also never null
+        //keeping checks as a fail-safe
+
         if (currentBookingSingleton.getActivity() == null) {
             System.out.println("activity is null");
             return false;
@@ -65,7 +70,6 @@ public class DatabaseUpdaterSingleton {
             System.out.println("organization is null");
             return false;
         }
-
 
 
         //TODO: add methods from BookingController to this class
@@ -93,12 +97,14 @@ public class DatabaseUpdaterSingleton {
         BookingDao bookingDao = new BookingDao();
         bookingDao.save(currentBookingSingleton.getBooking());
 
+        System.out.println(currentBookingSingleton.getBooking().getId());
+
 
         //3. booking_catering
 
         if (currentBookingSingleton.getCatering().getId() == 0) {
             System.out.println("no catering selected");
-        }else{
+        } else {
 
             Booking_CateringDao booking_cateringDao = new Booking_CateringDao();
 
@@ -106,14 +112,26 @@ public class DatabaseUpdaterSingleton {
 
         }
 
+        //4. booking_redskaber
+
+        if (currentBookingSingleton.getCurrentRedskaber().isEmpty()) {
+            System.out.println("no redskaber selected");
+        } else {
+
+            Booking_ToolsDao booking_toolsDao = new Booking_ToolsDao();
+
+            booking_toolsDao.save(currentBookingSingleton);
+        }
 
 
+        //5. booking_transport
 
-        //4. booking_activity
 
-        if(currentBookingSingleton.getActivity().getId() == 0){
+        //6. booking_activity
+
+        if (currentBookingSingleton.getActivity().getId() == 0) {
             System.out.println("no activity selected");
-        }else{
+        } else {
 
             Booking_ActivityDao booking_activityDao = new Booking_ActivityDao();
 
@@ -122,16 +140,15 @@ public class DatabaseUpdaterSingleton {
         }
 
 
-        //5. booking_field (if applicable)
+        //7. booking_field (if applicable)
 
-        if(currentBookingSingleton.getSubject() == null){
-            System.out.println("no subject selected");}
-        else {
+        if (currentBookingSingleton.getSubject() == null) {
+            System.out.println("no subject selected");
+        } else {
 
             //SubjectDAO subjectDAO = new SubjectDAO();
 
         }
-
 
 
         return true;
@@ -140,9 +157,68 @@ public class DatabaseUpdaterSingleton {
     }
 
 
+    //TODO: test this method
+    public boolean deleteCurrentBookingSingletonFromDatabase() throws SQLException, IOException {
+
+
+        CurrentBookingSingleton currentBookingSingleton = CurrentBookingSingleton.getInstance();
+
+        Booking_CateringDao booking_cateringDao = new Booking_CateringDao();
+        Booking_ToolsDao booking_toolsDao = new Booking_ToolsDao();
+        Booking_ActivityDao booking_activityDao = new Booking_ActivityDao();
+        BookingDao bookingDao = new BookingDao();
+
+        if (currentBookingSingleton.getBooking() == null) {
+            System.out.println("booking is null");
+            return false;
+        }
+
+        if (currentBookingSingleton.getCustomer() == null) {
+            System.out.println("customer is null");
+            return false;
+        }
+
+
+        Activity activity = booking_activityDao.getActivityByBookingId(currentBookingSingleton.getBooking().getId());
+
+        if (activity == null) {
+            System.out.println("activity is null");
+        }else {
+            currentBookingSingleton.setActivity(activity);
+
+            booking_activityDao.delete(currentBookingSingleton.getBooking().getId());
+
+            System.out.println("booking-activity deleted");
+        }
+
+
+
+        Catering catering = booking_cateringDao.getCateringByBookingId(currentBookingSingleton.getBooking().getId());
+
+
+            booking_cateringDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
+
+
+
+
+            booking_toolsDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
+
+
+
+
+            booking_activityDao.deleteById(currentBookingSingleton.getBooking().getId());
+
+
+        bookingDao.delete(currentBookingSingleton.getBooking());
+
+
+        return true;
+
+    }
+
 
     //idk what the fuck this method was meant with this but im sure I was thinking something brilliant
-    public void updateDatabase(){
+    public void updateDatabase() {
 
     }
 

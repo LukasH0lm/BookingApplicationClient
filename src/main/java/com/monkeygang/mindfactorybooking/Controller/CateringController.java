@@ -1,11 +1,8 @@
 package com.monkeygang.mindfactorybooking.Controller;
 
-import com.monkeygang.mindfactorybooking.Dao.ActivityDao;
 import com.monkeygang.mindfactorybooking.Dao.CateringDao;
-import com.monkeygang.mindfactorybooking.Objects.Activity;
 import com.monkeygang.mindfactorybooking.Objects.Catering;
 import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
-import com.monkeygang.mindfactorybooking.Objects.Organisation_type;
 import com.monkeygang.mindfactorybooking.utility.SceneChanger;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -91,7 +88,7 @@ public class CateringController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("No catering option selected");
-            alert.setContentText("Please select a catering option");
+            alert.setContentText("Udfyld venligst catering");
             alert.showAndWait();
             return;
         }
@@ -119,21 +116,9 @@ public class CateringController {
 
         SceneChanger sceneChanger = new SceneChanger();
 
-        String view = null;
 
-        if (CurrentBookingSingleton.getInstance().getOrganization().getType().equals(Organisation_type.SCHOOL)) {
-            view = "school-activity";
-        } else if (CurrentBookingSingleton.getInstance().getOrganization().getType().equals(Organisation_type.PRIVATE)) {
-            view = "private-activity";
-        }
 
-        if (view == null) {
-            System.out.println("view is null");
-            System.out.println("organization type is " + CurrentBookingSingleton.getInstance().getOrganization().getType());
-            return;
-        }
-
-        sceneChanger.changeScene(scene,container, view, true);
+        sceneChanger.changeScene(scene,container, "redskaber", true);
 
 
 

@@ -3,11 +3,15 @@ package com.monkeygang.mindfactorybooking.Controller;
 import com.monkeygang.mindfactorybooking.Dao.BookingDao;
 import com.monkeygang.mindfactorybooking.Objects.Booking;
 import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
+import com.monkeygang.mindfactorybooking.utility.DatabaseUpdaterSingleton;
 import com.monkeygang.mindfactorybooking.utility.SceneChanger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -36,20 +40,23 @@ public class BookingController {
 
     public void initialize() {
 
+
+
         startTimeCombobox.getItems().addAll("7:00", "8:00", "9:00", "10:00", "11:00", "12:00",
                 "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
 
         endTimeCombobox.getItems().addAll("7:00", "8:00", "9:00", "10:00", "11:00", "12:00",
                 "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
 
-        //TODO: implement edit booking
-        /*
+
+        //TODO: implement edit booking in its own window
+
         if (CurrentBookingSingleton.getInstance().getIsEdit()) {
             fillFields();
 
         } else {
             deleteButton.setVisible(false);
-        }*/
+        }
 
         if (CurrentBookingSingleton.getInstance().getBooking() != null) {
             fillFields();
@@ -149,7 +156,7 @@ public class BookingController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("Start time is after end time!");
+            alert.setContentText("Starttid er efter sluttid!");
             alert.showAndWait();
 
             alert.setOnCloseRequest((e) -> {
@@ -167,7 +174,7 @@ public class BookingController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("Start time is before current time!");
+            alert.setContentText("Starttid er før nuværende tid!");
 
 
             alert.setOnCloseRequest((e) -> {
@@ -188,7 +195,7 @@ public class BookingController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("This time is already booked!");
+            alert.setContentText("Denne tid er allerede booket!");
             alert.showAndWait();
 
             alert.setOnCloseRequest((e) -> {
@@ -219,7 +226,7 @@ public class BookingController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("This time is already booked!");
+            alert.setContentText("Denne tid er allerede booket!");
             alert.showAndWait();
             return;
         }
@@ -265,7 +272,7 @@ public class BookingController {
 
         alert.setTitle("Error");
         alert.setHeaderText("Error");
-        alert.setContentText("Please fill out all fields!");
+        alert.setContentText("Udfyld venligst alle felterne!");
         alert.showAndWait();
 
 
@@ -279,6 +286,12 @@ public class BookingController {
             bookings = bookingDaoImpl.getAll();
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
+        }
+
+
+        //removes the current booking from the list of bookings
+        if (CurrentBookingSingleton.getInstance().getIsEdit()) {
+            bookings.removeIf(booking -> booking.getId() == CurrentBookingSingleton.getInstance().getBooking().getId());
         }
 
         //checks for collisions
@@ -330,17 +343,9 @@ public class BookingController {
     }
 
     @FXML
-    void onDeleteButtonClick() {
+    void onDeleteButtonClick() throws SQLException, IOException {
 
-        try {
-            System.out.println("deleting:" + CurrentBookingSingleton.getInstance().getBooking().getId());
-            //TODO: modify delete method to delete all tables that are connected to the booking
-            bookingDaoImpl.delete(CurrentBookingSingleton.getInstance().getBooking());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        DatabaseUpdaterSingleton.getInstance().deleteCurrentBookingSingletonFromDatabase();
 
         Stage stage = (Stage) deleteButton.getScene().getWindow();
         stage.close();

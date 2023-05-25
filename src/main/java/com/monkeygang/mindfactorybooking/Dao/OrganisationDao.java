@@ -1,7 +1,7 @@
 package com.monkeygang.mindfactorybooking.Dao;
 
-import com.monkeygang.mindfactorybooking.Objects.Organization;
 import com.monkeygang.mindfactorybooking.Objects.Organisation_type;
+import com.monkeygang.mindfactorybooking.Objects.Organization;
 import com.monkeygang.mindfactorybooking.utility.ConnectionSingleton;
 
 import java.io.IOException;

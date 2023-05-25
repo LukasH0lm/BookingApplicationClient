@@ -1,13 +1,13 @@
 package com.monkeygang.mindfactorybooking.Controller;
 
 import com.itextpdf.text.DocumentException;
-import com.monkeygang.mindfactorybooking.Dao.BookingDao;
 import com.monkeygang.mindfactorybooking.BookingApplication;
+import com.monkeygang.mindfactorybooking.Dao.BookingDao;
+import com.monkeygang.mindfactorybooking.Dao.Booking_ActivityDao;
 import com.monkeygang.mindfactorybooking.Objects.Booking;
 import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
 import com.monkeygang.mindfactorybooking.Objects.Organization;
 import com.monkeygang.mindfactorybooking.utility.PDFMaker;
-
 import com.monkeygang.mindfactorybooking.utility.RectangleYPositionComparator;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,6 +17,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -47,11 +49,15 @@ public class CalendarController {
 
     private final BookingDao bookingDAO = new BookingDao();
 
+    Booking_ActivityDao booking_activityDao = new Booking_ActivityDao();
+
     public double uiStartTime = 07.00;
 
     public double heightPrLabel = 0.0;
 
     public double spacingPrLabel = 0.0;
+
+    private boolean isUpdating = true;
 
     //TODO: shutdown threads on close
 
@@ -64,16 +70,12 @@ public class CalendarController {
 
     public void initialize() throws SQLException, IOException {
 
-        //mest for at teste om ui er "agilt"
-        timeComboBox.setValue("18:00");
-        timeComboBox.getItems().add("18:00");
-        timeComboBox.getItems().add("24:00");
-        timeComboBox.onActionProperty().setValue(e -> {
-            generateCalendar(7);
-        });
+
 
         // Vi sætter startdatoen til at være dagens dato
         datePicker.setValue(LocalDate.now());
+
+
 
 
         // Datoen skal konveretes til date.
@@ -103,7 +105,7 @@ public class CalendarController {
         int week = cal.get(Calendar.WEEK_OF_YEAR);
 
         // vi sætter ugenummert til at være ugenummeret for den valgte dato, når programmet starter.
-        ugeLabel.setText("Uge " + week);
+        ugeLabel.setText("Uge: " + week);
 
 
         // Vi får alle bookings fra databasen, og ligger dem i listen.
@@ -139,7 +141,7 @@ public class CalendarController {
     private void generateCalendar(double calenderStartTime) {
 
 
-        double calendarEndTime = Double.parseDouble(timeComboBox.getValue().replace(":", "."));
+        double calendarEndTime = 18.0;
         double timeLabelsHeight = 0.0;
 
 
@@ -228,8 +230,6 @@ public class CalendarController {
             System.out.println("bookings er null");
         }
 
-
-
         spacingPrLabel = vBoxTid.getSpacing();
 
         // Datoen skal konveretes til date. //hvorfor?
@@ -243,7 +243,7 @@ public class CalendarController {
         int yearOnAction = calOnAction.get(Calendar.YEAR);
 
 
-        ugeLabel.setText("Uge " + weekOnAction);
+        ugeLabel.setText("Uge: " + weekOnAction);
 
 
         paneMandag.getChildren().clear();
@@ -386,7 +386,7 @@ public class CalendarController {
     }
 
 
-    public StackPane generateAvailableBookingStack(int dayOfMonth, Pane pane, double rectangleHeight, double rectangleYStartPosition) {
+    public void generateAvailableBookingStack(int dayOfMonth, Pane pane, double rectangleHeight, double rectangleYStartPosition) {
 
         double startTimeHours = (int) (uiStartTime + (rectangleYStartPosition / 45));
         double endTimeHours = (int) (startTimeHours + (rectangleHeight / 45));
@@ -401,8 +401,8 @@ public class CalendarController {
         Booking availableBooking = new Booking(startTime, endTime);
 
 
-        Rectangle bookingRectangle = new Rectangle(50, rectangleHeight);
-        bookingRectangle.setFill(Color.PURPLE);
+        Rectangle bookingRectangle = new Rectangle(100, rectangleHeight);
+        bookingRectangle.setFill(Color.TRANSPARENT);
 
         StackPane stack = new StackPane(bookingRectangle);
 
@@ -413,26 +413,25 @@ public class CalendarController {
 
         pane.getChildren().add(stack);
 
-        return stack;
+
 
     }
 
     public StackPane generateBookingStack(Booking booking, double rectangleHeight, double rectangleYStartPosition) throws SQLException, IOException {
 
-        Rectangle bookingRectangle = new Rectangle(50, rectangleHeight);
+        Rectangle bookingRectangle = new Rectangle(100, rectangleHeight);
         bookingRectangle.setFill(Color.RED);
 
         Organization currentOrganization = bookingDAO.getOrganisation(booking);
 
 
 
-
         Label bookingLabel = new Label(currentOrganization.getName());
 
-        bookingLabel.setText("");
-        /*
+
 
         bookingLabel.setAlignment(Pos.CENTER);
+
 
         bookingLabel.setTextFill(Paint.valueOf("white"));
         bookingLabel.setMaxWidth(45); // 50 - 5 to give the text to space to breathe
@@ -440,11 +439,36 @@ public class CalendarController {
 
 
 
-         */
-        StackPane stack = new StackPane(bookingRectangle, bookingLabel);
+
+        int activityID = booking_activityDao.getActivityIDbyBookingID(booking.getId());
+
+        ImageView activityIcon = new ImageView();
+
+
+        //Hvis det er en aktivitet, så skal vi have billedet fra aktiviteten.
+        // Vi returner 0, når booking id ikke findes i aktivitets tabellen, så når den er 0, så sætter vi billedet til møde,
+        // da vi ser en booking som et møde, når der ikke er valgt nogen aktivitet.
+
+               switch (activityID) {
+                   case 0 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/møde.png"));
+                   case 10 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/idefabrikken.png"));
+                   case 13 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/digitalfabrikation.png"));
+                   case 11 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robotpåjob.png"));
+                   case 14 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robottenrydderop.png"));
+                   case 12 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/naturismevedvadehavet.png"));
+                   case 15 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/skabsikkerhedivadehavet.png"));
+                   case 16 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativspark.png"));
+                   case 17 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/ideGeneratoren.png"));
+                   case 18 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativtech.png"));
+               }
 
 
 
+
+        activityIcon.setTranslateX(35);
+        activityIcon.setTranslateY(- ((rectangleHeight / 2) - 7));
+
+        StackPane stack = new StackPane(bookingRectangle, bookingLabel, activityIcon);
 
         stack.setLayoutY(rectangleYStartPosition);
         stack.setPrefHeight(rectangleHeight);
@@ -465,9 +489,6 @@ public class CalendarController {
         //we should discuss if we want to keep it or not
 
         stack.setOnMouseClicked(event -> {
-
-            /*
-
             CurrentBookingSingleton.getInstance().setCurrentBooking(booking);
 
 
@@ -485,7 +506,6 @@ public class CalendarController {
 
                 }
             }
-            */
 
 
         });
@@ -595,20 +615,20 @@ public class CalendarController {
 
                 double startRectangleYStartPosition = calendarStartYPosition;
 
+
                 double spacingBetweenStartOfCalendarAndFirstBooking = eksisterendeRektanglerForHvertPane.get(0).getLayoutY()
                         - calendarStartYPosition;
 
+                // vi reassigner en variable her, det gør vi for at koden er mere læselig. Det er ikke nødvendigt.
                 double startRectangleHeight = spacingBetweenStartOfCalendarAndFirstBooking;
 
 
-
-                //System.out.println("Start rectangle height: " + startRectangleHeight);
 
                 //Vi starter med at tjekke, om der er afstand mellem det første rektangel
                 //I hvert pane, og starten på kalenderen
                 // Hvis der er afstand, skal vi have lagt en rektangel ind, som går fra starten af kalenderen,
                 // og til starten af den første booking/bookingrektangel.
-                if (spacingBetweenStartOfCalendarAndFirstBooking > 45) {
+                if (spacingBetweenStartOfCalendarAndFirstBooking > 1) {
                     // Vi laver et rektangel, der går fra starten af kalenderen, og til starten af den første booking/bookingrektangel.
 
                     generateAvailableBookingStack(dayOfMonth, pane, startRectangleHeight, startRectangleYStartPosition);
@@ -617,12 +637,7 @@ public class CalendarController {
 
 
                 }
-                else if (spacingBetweenStartOfCalendarAndFirstBooking <= 45){
-                    Rectangle blackRectangle = new Rectangle(50, startRectangleHeight);
-                    blackRectangle.setFill(Color.BLACK);
-                    blackRectangle.setLayoutY(startRectangleYStartPosition);
-                    pane.getChildren().add(blackRectangle);
-                }
+
 
 
 
@@ -643,18 +658,13 @@ public class CalendarController {
                     double spacingBetweenBooking = (previousRectangleYPosition + previousRectangleHeight)
                             - (currentRectangleYStartPosition - currentRectangleHeight);
 
-                    if (spacingBetweenBooking > 45) {
+                    if (spacingBetweenBooking > 1) {
 
                         generateAvailableBookingStack(dayOfMonth, pane, currentRectangleHeight, currentRectangleYStartPosition);
 
 
                     }
-                    else if (spacingBetweenBooking <= 45){
-                        Rectangle blackRectangle = new Rectangle(50, currentRectangleHeight);
-                        blackRectangle.setFill(Color.BLACK);
-                        blackRectangle.setLayoutY(currentRectangleYStartPosition);
-                        pane.getChildren().add(blackRectangle);
-                    }
+
                 }
 
                 final int lastRectangleIndex = eksisterendeRektanglerForHvertPane.size() - 1;
@@ -672,18 +682,13 @@ public class CalendarController {
                 double endRectangleHeight = spacingBetweenLastBookingAndEndOfCalendar;
 
 
-                if (spacingBetweenLastBookingAndEndOfCalendar > 45) {
+                if (spacingBetweenLastBookingAndEndOfCalendar > 1) {
 
                   generateAvailableBookingStack(dayOfMonth, pane, endRectangleHeight, endRectangleYStartPosition);
 
 
                 }
-                else if (spacingBetweenLastBookingAndEndOfCalendar <= 45){
-                    Rectangle blackRectangle = new Rectangle(50, endRectangleHeight);
-                    blackRectangle.setFill(Color.BLACK);
-                    blackRectangle.setLayoutY(endRectangleYStartPosition);
-                    pane.getChildren().add(blackRectangle);
-                }
+
             }
 
 
@@ -708,7 +713,7 @@ public class CalendarController {
             Stage stage = new Stage();
             stage.setTitle("Booking");
 
-            stage.getIcons().add(new javafx.scene.image.Image("file:src/main/resources/com/monkeygang/mindfactorybooking/logo.jpg"));
+            stage.getIcons().add(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/logo.jpg"));
 
 
             stage.setScene(new Scene(root));
@@ -761,7 +766,7 @@ public class CalendarController {
 
     private void initializeUpdatingThread(){
 
-        ArrayList<Booking> allBookingsonThread = new ArrayList<>();
+      //  ArrayList<Booking> allBookingsonThread = new ArrayList<>();
 
 
         Runnable runnableTask = () -> {
@@ -777,19 +782,19 @@ public class CalendarController {
                 throw new RuntimeException(e);
             }
 
-            while (true) {
+            while (isUpdating) {
 
                 //sleep for 5 seconds
                 //forgot to add this and my machine sounded like it was running source 2 :p
                 try {
-                    Thread.sleep(100000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
 
                 try {
-                    allBookingsonThread.clear();
-                    allBookingsonThread.addAll(BookingDAO.getAll());
+                    allBookings.clear();
+                    allBookings.addAll(BookingDAO.getAll());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (IOException e) {
@@ -798,7 +803,7 @@ public class CalendarController {
 
                 Platform.runLater(() -> {
                     try {
-                        loadBookings(allBookingsonThread);
+                        loadBookings(allBookings);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     } catch (IOException e) {
@@ -826,12 +831,7 @@ public class CalendarController {
 
 
 
-    public void onSearchButtonClick() throws SQLException, IOException {
-
-
-
-        allBookings.clear();
-        allBookings.addAll(bookingDAO.getAll());
+    public void onSearchButtonClick(){
 
         for (Booking booking : allBookings){
             if (booking.hashCode() == Integer.parseInt(SearchTextField.getText())){
@@ -853,10 +853,44 @@ public class CalendarController {
     }
 
 
+    public void startUpdate() {
+        isUpdating = true;
+    }
+
+    public void stopUpdate() {
+        isUpdating = false;
+    }
+
+    public void onDashboardButtonClick() throws IOException {
+
+        stopUpdate();
+
+        Stage currentStage = (Stage) cDashboardButton.getScene().getWindow();
+
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/monkeygang/mindfactorybooking/view/dashboard-view.fxml"));
+        Parent newRoot = fxmlLoader.load();
+
+
+        Scene newScene = new Scene(newRoot);
+
+
+        currentStage.setScene(newScene);
+        currentStage.setTitle("Mind Factory Booking - Admin");
+        currentStage.show();
+
+
+    }
+
+
+
+
+
 
     public void previousWeekButtonPressed() {
 
         datePicker.setValue(datePicker.getValue().minusDays(7));
+
 
 
     }
@@ -869,6 +903,7 @@ public class CalendarController {
     public void createPDF() throws DocumentException, IOException {
         PDFMaker.HelloWordPDF();
     }
+
 
     @FXML
     AnchorPane calendarAnchorPane;
@@ -897,11 +932,10 @@ public class CalendarController {
     private Line hBoxLineThree;
 
 
-    @FXML
-    private Button nextWeekButton;
 
     @FXML
-    private Button previousWeekButton;
+    private Button cDashboardButton;
+
 
     @FXML
     private Line hBoxLineTwo;

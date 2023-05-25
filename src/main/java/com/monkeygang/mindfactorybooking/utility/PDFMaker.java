@@ -1,24 +1,22 @@
 package com.monkeygang.mindfactorybooking.utility;
 
-import java.awt.Graphics2D;
-import java.io.*;
-
-import com.itextpdf.text.DocumentException;
-import com.monkeygang.mindfactorybooking.BookingApplication;
-import org.jfree.chart.*;
-
-
 import com.itextpdf.awt.DefaultFontMapper;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
-
-
-
+import com.monkeygang.mindfactorybooking.BookingApplication;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class PDFMaker {
 //Lukas er sej

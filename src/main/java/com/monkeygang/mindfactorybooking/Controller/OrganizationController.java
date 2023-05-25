@@ -5,7 +5,6 @@ import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
 import com.monkeygang.mindfactorybooking.Objects.Organization;
 import com.monkeygang.mindfactorybooking.utility.AlertHandler;
 import com.monkeygang.mindfactorybooking.utility.SceneChanger;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -16,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class OrganizationController {
 
@@ -101,7 +99,7 @@ public class OrganizationController {
         alertHandler.showAlert(stage,
                 "No organization selected",
                 "Please select an organization",
-                "You have not selected an organization. Please select an organization to continue.");
+                "Du har ikke valgt en organisation. Vælg venligst en organisation for at fortsætte.");
 
     }
 
