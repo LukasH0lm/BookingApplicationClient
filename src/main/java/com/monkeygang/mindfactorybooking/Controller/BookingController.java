@@ -6,6 +6,7 @@ import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
 import com.monkeygang.mindfactorybooking.utility.DatabaseUpdaterSingleton;
 import com.monkeygang.mindfactorybooking.utility.SceneChanger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,7 +40,6 @@ public class BookingController {
     }
 
     public void initialize() {
-
 
 
         startTimeCombobox.getItems().addAll("7:00", "8:00", "9:00", "10:00", "11:00", "12:00",
@@ -81,7 +81,6 @@ public class BookingController {
         endDatePicker.setValue(booking.getEndTime().toLocalDateTime().toLocalDate());
         startTimeCombobox.setValue(booking.getStartTime().toLocalDateTime().toLocalTime().toString().substring(0, 5));
         endTimeCombobox.setValue(booking.getEndTime().toLocalDateTime().toLocalTime().toString().substring(0, 5));
-
 
 
     }
@@ -217,14 +216,20 @@ public class BookingController {
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
 
+
+            EventHandler test = stage.getOnHiding();
+
             stage.setOnHiding((e) -> {
+
+                test.handle(e);
 
                 System.out.println("closing");
                 System.out.println(CurrentBookingSingleton.getInstance().getIsTemporary());
 
-                System.out.println("DELETING TEMP DELETING TEMP!!!!!!!!");
 
                 if (CurrentBookingSingleton.getInstance().getIsTemporary()) {
+
+                    System.out.println("DELETING TEMP DELETING TEMP!!!!!!!!");
 
 
                     try {
@@ -248,7 +253,7 @@ public class BookingController {
     }
 
 
-    public void editBooking() {
+    public void editBooking() throws IOException {
 
         // the args are intended to be used for the update method, but we don't use them
         String[] args = new String[1];
@@ -280,13 +285,14 @@ public class BookingController {
         // idk if this is a good way to do it, but it's technically in a thread now
         exec.execute(() -> {
             try {
+
                 bookingDaoImpl.update(CurrentBookingSingleton.getInstance().getBooking(), args);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
 
-
+        loadCateringView();
     }
 
     public void showEmptyFieldAlert() {

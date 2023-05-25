@@ -91,7 +91,9 @@ public class DatabaseUpdaterSingleton {
         //DELETING TEMPORARY BOOKING
         BookingDao bookingDao = new BookingDao();
 
-        bookingDao.delete(currentBookingSingleton.getBooking().getId());
+        bookingDao.deleteByID(currentBookingSingleton.getBooking().getId());
+
+        currentBookingSingleton.setIsTemporary(false);
 
         //1. Customer
 
