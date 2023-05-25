@@ -38,12 +38,10 @@ public class PDFMaker {
         PdfTemplate pdfTemplate = pdfContentByte.createTemplate(width, height);
 
         //create graphics
-        Graphics2D graphics2d = pdfTemplate.createGraphics(width, height,
-                new DefaultFontMapper());
+        Graphics2D graphics2d = pdfTemplate.createGraphics(width, height, new DefaultFontMapper());
 
         //create rectangle
-        java.awt.geom.Rectangle2D rectangle2d = new java.awt.geom.Rectangle2D.Double(
-                0, 0, width, height);
+        java.awt.geom.Rectangle2D rectangle2d = new java.awt.geom.Rectangle2D.Double(0, 0, width, height);
 
         pieChart.draw(graphics2d, rectangle2d);
 
@@ -56,7 +54,6 @@ public class PDFMaker {
         document.add(new com.itextpdf.text.Paragraph("Navn: Lukas"));
         document.add(new com.itextpdf.text.Paragraph("Email: lukasholm@hotmail.com"));
         document.add(new com.itextpdf.text.Paragraph("Tlf: 12345678"));
-
 
 
         document.close();

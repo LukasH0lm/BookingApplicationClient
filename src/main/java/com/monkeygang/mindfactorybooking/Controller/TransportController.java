@@ -63,7 +63,7 @@ public class TransportController {
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
 
-            alertHandler.showAlert(stage, "Udfyld venligst alle felter", "deez","gør det");
+            alertHandler.showAlert(stage, "Udfyld venligst alle felter", "deez", "gør det");
             return;
         }
 
@@ -71,7 +71,7 @@ public class TransportController {
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
 
-            alertHandler.showAlert(stage, "Vælg venligst en transportform", "deez","gør det");
+            alertHandler.showAlert(stage, "Vælg venligst en transportform", "deez", "gør det");
             return;
         }
 
@@ -79,7 +79,7 @@ public class TransportController {
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
 
-            alertHandler.showAlert(stage, "Ankomst og afgang kan ikke være det samme", "deez","gør det");
+            alertHandler.showAlert(stage, "Ankomst og afgang kan ikke være det samme", "deez", "gør det");
             return;
         }
 
@@ -90,15 +90,12 @@ public class TransportController {
 
                 Stage stage = (Stage) nextButton.getScene().getWindow();
 
-                alertHandler.showAlert(stage, "Ankomst kan ikke være efter afgang", "deez","gør det");
+                alertHandler.showAlert(stage, "Ankomst kan ikke være efter afgang", "deez", "gør det");
                 return;
             }
 
 
         }
-
-
-
 
 
         if (privatTransportRadioButton.isSelected()) {
@@ -110,7 +107,7 @@ public class TransportController {
         }
 
 
-CurrentBookingSingleton.getInstance().getBooking().setArrival_time(Time.valueOf(ankomstTextfield.getText() + ":00"));
+        CurrentBookingSingleton.getInstance().getBooking().setArrival_time(Time.valueOf(ankomstTextfield.getText() + ":00"));
         CurrentBookingSingleton.getInstance().getBooking().setDeparture_time(Time.valueOf(afgangTextfield.getText() + ":00"));
 
         Scene scene = nextButton.getScene();

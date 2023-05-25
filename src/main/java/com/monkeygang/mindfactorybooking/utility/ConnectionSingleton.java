@@ -1,5 +1,6 @@
 package com.monkeygang.mindfactorybooking.utility;
 
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,9 +15,9 @@ public class ConnectionSingleton {
 
     private ConnectionSingleton() throws IOException {
 
-      //  File file = new File(BookingApplication.class.getResource("").getPath() + "DatabaseSettings");
+        //  File file = new File(BookingApplication.class.getResource("").getPath() + "DatabaseSettings");
 
-       // BufferedReader br = new BufferedReader(new FileReader(file));
+        // BufferedReader br = new BufferedReader(new FileReader(file));
 
 
         try {

@@ -449,18 +449,18 @@ public class CalendarController {
         // Vi returner 0, når booking id ikke findes i aktivitets tabellen, så når den er 0, så sætter vi billedet til møde,
         // da vi ser en booking som et møde, når der ikke er valgt nogen aktivitet.
 
-               switch (activityID) {
-                   case 0 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/møde.png"));
-                   case 10 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/idefabrikken.png"));
-                   case 13 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/digitalfabrikation.png"));
-                   case 11 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robotpåjob.png"));
-                   case 14 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robottenrydderop.png"));
-                   case 12 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/naturismevedvadehavet.png"));
-                   case 15 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/skabsikkerhedivadehavet.png"));
-                   case 16 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativspark.png"));
-                   case 17 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/ideGeneratoren.png"));
-                   case 18 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativtech.png"));
-               }
+        switch (activityID) {
+            case 0 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/møde.png"));
+            case 10 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/idefabrikken.png"));
+            case 13 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/digitalfabrikation.png"));
+            case 11 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robotpåjob.png"));
+            case 14 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/robottenrydderop.png"));
+            case 12 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/naturismevedvadehavet.png"));
+            case 15 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/skabsikkerhedivadehavet.png"));
+            case 16 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativspark.png"));
+            case 17 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/ideGeneratoren.png"));
+            case 18 -> activityIcon.setImage(new Image("file:src/main/resources/com/monkeygang/mindfactorybooking/kreativtech.png"));
+        }
 
 
 
@@ -684,7 +684,7 @@ public class CalendarController {
 
                 if (spacingBetweenLastBookingAndEndOfCalendar > 1) {
 
-                  generateAvailableBookingStack(dayOfMonth, pane, endRectangleHeight, endRectangleYStartPosition);
+                    generateAvailableBookingStack(dayOfMonth, pane, endRectangleHeight, endRectangleYStartPosition);
 
 
                 }
@@ -766,7 +766,7 @@ public class CalendarController {
 
     private void initializeUpdatingThread(){
 
-      //  ArrayList<Booking> allBookingsonThread = new ArrayList<>();
+        //  ArrayList<Booking> allBookingsonThread = new ArrayList<>();
 
 
         Runnable runnableTask = () -> {
@@ -860,29 +860,6 @@ public class CalendarController {
     public void stopUpdate() {
         isUpdating = false;
     }
-
-    public void onDashboardButtonClick() throws IOException {
-
-        stopUpdate();
-
-        Stage currentStage = (Stage) cDashboardButton.getScene().getWindow();
-
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/monkeygang/mindfactorybooking/view/dashboard-view.fxml"));
-        Parent newRoot = fxmlLoader.load();
-
-
-        Scene newScene = new Scene(newRoot);
-
-
-        currentStage.setScene(newScene);
-        currentStage.setTitle("Mind Factory Booking - Admin");
-        currentStage.show();
-
-
-    }
-
-
 
 
 

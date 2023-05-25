@@ -23,10 +23,11 @@ public class CateringController {
     public CateringController() {
 
     }
+
     public void initialize() {
 
 
-        if (CurrentBookingSingleton.getInstance().getCateringId() != -1){
+        if (CurrentBookingSingleton.getInstance().getCateringId() != -1) {
             System.out.println("catering id is not -1");
             System.out.println("catering id is " + CurrentBookingSingleton.getInstance().getCateringId());
             switch (CurrentBookingSingleton.getInstance().getCateringId()) {
@@ -56,7 +57,7 @@ public class CateringController {
 
         System.out.println(buttonName + " selected");
 
-        switch (buttonName){
+        switch (buttonName) {
             case "Halvdags kaffemøde" -> halfDayCoffeeMeetingRadioButton.setSelected(true);
             case "Halvdagsmødepakke" -> halfDayMeetingRadioButton.setSelected(true);
             case "Heldagsmødepakke" -> wholeDayMeetingRadioButton.setSelected(true);
@@ -70,19 +71,19 @@ public class CateringController {
 
         System.out.println("submit button clicked");
 
-        if (halfDayCoffeeMeetingRadioButton.isSelected()){
+        if (halfDayCoffeeMeetingRadioButton.isSelected()) {
             System.out.println("halfDayCoffeeMeeting selected");
             CurrentBookingSingleton.getInstance().setCateringId(1);
-        } else if (halfDayMeetingRadioButton.isSelected()){
+        } else if (halfDayMeetingRadioButton.isSelected()) {
             System.out.println("halfDayMeeting selected");
             CurrentBookingSingleton.getInstance().setCateringId(2);
-        }else if (wholeDayMeetingRadioButton.isSelected()){
+        } else if (wholeDayMeetingRadioButton.isSelected()) {
             System.out.println("wholeDayMeeting selected");
-            CurrentBookingSingleton.getInstance().setCateringId(3);}
-        else if (noCateringRadioButton.isSelected()){
+            CurrentBookingSingleton.getInstance().setCateringId(3);
+        } else if (noCateringRadioButton.isSelected()) {
             System.out.println("noCatering selected");
             CurrentBookingSingleton.getInstance().setCateringId(0);
-        }else {
+        } else {
             System.out.println("nothing selected");
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -92,7 +93,6 @@ public class CateringController {
             alert.showAndWait();
             return;
         }
-
 
 
         System.out.println("Current booking id = " + CurrentBookingSingleton.getInstance().getBooking().getId());
@@ -111,15 +111,12 @@ public class CateringController {
         CurrentBookingSingleton.getInstance().setCurrentCatering(catering);
 
 
-
         Scene scene = nextButton.getScene();
 
         SceneChanger sceneChanger = new SceneChanger();
 
 
-
-        sceneChanger.changeScene(scene,container, "redskaber", true);
-
+        sceneChanger.changeScene(scene, container, "redskaber", true);
 
 
     }
@@ -130,7 +127,7 @@ public class CateringController {
 
         SceneChanger sceneChanger = new SceneChanger();
 
-        sceneChanger.changeScene(scene,container, "booking", false);
+        sceneChanger.changeScene(scene, container, "booking", false);
 
 
     }

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class SceneChanger {
 
 
-    public void changeScene(Scene scene,Parent container, String viewName, boolean isForward) throws IOException {
+    public void changeScene(Scene scene, Parent container, String viewName, boolean isForward) throws IOException {
 
         Parent root = FXMLLoader.load(getClass().getResource("/com/monkeygang/mindfactorybooking/view/" + viewName + "-view.fxml"));
 
@@ -32,7 +32,6 @@ public class SceneChanger {
         parentContainer.getChildren().add(root);
 
 
-
         Timeline timeline = new Timeline();
         KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
         KeyFrame kf = new KeyFrame(Duration.seconds(1), kv);
@@ -43,10 +42,6 @@ public class SceneChanger {
         timeline.play();
 
     }
-
-
-
-
 
 
 }

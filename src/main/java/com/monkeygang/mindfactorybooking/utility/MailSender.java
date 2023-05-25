@@ -103,7 +103,6 @@ public class MailSender {
             message.setContent(multipart);
 
 
-
             System.out.println("sending...");
             // Send message
             Transport.send(message);

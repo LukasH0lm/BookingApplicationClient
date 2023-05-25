@@ -191,28 +191,23 @@ public class DatabaseUpdaterSingleton {
 
         if (activityid == -1) {
             System.out.println("activity is null");
-        }else {
+        } else {
             booking_activityDao.deleteById(currentBookingSingleton.getBooking().getId());
 
             System.out.println("booking-activity deleted");
         }
 
 
-
         Catering catering = booking_cateringDao.getCateringByBookingId(currentBookingSingleton.getBooking().getId());
 
 
-            booking_cateringDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
+        booking_cateringDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
 
 
+        booking_toolsDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
 
 
-            booking_toolsDao.deleteByBookingId(currentBookingSingleton.getBooking().getId());
-
-
-
-
-            booking_activityDao.deleteById(currentBookingSingleton.getBooking().getId());
+        booking_activityDao.deleteById(currentBookingSingleton.getBooking().getId());
 
 
         bookingDao.delete(currentBookingSingleton.getBooking());

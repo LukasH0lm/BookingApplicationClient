@@ -28,11 +28,11 @@ public class OrganizationController {
 
     public void initialize() throws SQLException, IOException {
 
-            organisationCombobox.getItems().addAll(organisationDao.getAll());
+        organisationCombobox.getItems().addAll(organisationDao.getAll());
 
-            if (currentBookingSingleton.getOrganization() != null) {
-                organisationCombobox.setValue(currentBookingSingleton.getOrganization());
-            }
+        if (currentBookingSingleton.getOrganization() != null) {
+            organisationCombobox.setValue(currentBookingSingleton.getOrganization());
+        }
 
     }
 
@@ -85,7 +85,7 @@ public class OrganizationController {
 
         SceneChanger sceneChanger = new SceneChanger();
 
-        sceneChanger.changeScene(scene,container,"booking", true);
+        sceneChanger.changeScene(scene, container, "booking", true);
 
 
     }
