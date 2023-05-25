@@ -1,7 +1,10 @@
 package com.monkeygang.mindfactorybooking.utility;
 
 import com.monkeygang.mindfactorybooking.Dao.*;
-import com.monkeygang.mindfactorybooking.Objects.*;
+import com.monkeygang.mindfactorybooking.Objects.Booking;
+import com.monkeygang.mindfactorybooking.Objects.Catering;
+import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
+import com.monkeygang.mindfactorybooking.Objects.Customer;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -179,14 +182,12 @@ public class DatabaseUpdaterSingleton {
         }
 
 
-        Activity activity = booking_activityDao.getActivityByBookingId(currentBookingSingleton.getBooking().getId());
+        int activityid = booking_activityDao.getActivityIDbyBookingID(currentBookingSingleton.getBooking().getId());
 
-        if (activity == null) {
+        if (activityid == -1) {
             System.out.println("activity is null");
         }else {
-            currentBookingSingleton.setActivity(activity);
-
-            booking_activityDao.delete(currentBookingSingleton.getBooking().getId());
+            booking_activityDao.deleteById(currentBookingSingleton.getBooking().getId());
 
             System.out.println("booking-activity deleted");
         }

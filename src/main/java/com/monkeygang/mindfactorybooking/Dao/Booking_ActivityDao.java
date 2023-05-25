@@ -1,9 +1,7 @@
 package com.monkeygang.mindfactorybooking.Dao;
 
-import com.monkeygang.mindfactorybooking.Objects.Activity;
 import com.monkeygang.mindfactorybooking.Objects.Booking;
 import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
-import com.monkeygang.mindfactorybooking.Objects.Organisation_type;
 import com.monkeygang.mindfactorybooking.utility.ConnectionSingleton;
 
 import java.io.IOException;
@@ -26,7 +24,7 @@ public class Booking_ActivityDao implements Dao{
         return Optional.empty();
     }
 
-    public Activity getActivityByBookingId(long id) throws SQLException, IOException {
+    public int getActivityIdByBookingId(long id) throws SQLException, IOException {
 
         PreparedStatement ps = con.prepareStatement("SELECT * FROM booking_activity WHERE booking_id = ?");
 
@@ -37,10 +35,10 @@ public class Booking_ActivityDao implements Dao{
         ResultSet rs = ps.getResultSet();
 
         if (rs.next()) {
-            return new Activity(rs.getInt("activity_id"), rs.getString("activity_name"), Organisation_type.values()[ rs.getInt("type")]);
+            return rs.getInt("activity_id");
         }
 
-        return null;
+        return -1;
 
     }
     @Override

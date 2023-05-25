@@ -43,7 +43,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class CalendarController {
 
-    private List<Booking> allBookings = new ArrayList<>();
+    private List<Booking> allBookings = Collections.synchronizedList(new ArrayList<>());
 
     private final DecimalFormat df = new DecimalFormat("00.00");
 
