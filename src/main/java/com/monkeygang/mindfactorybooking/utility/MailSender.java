@@ -2,6 +2,7 @@ package com.monkeygang.mindfactorybooking.utility;
 
 
 import com.monkeygang.mindfactorybooking.BookingApplication;
+import com.monkeygang.mindfactorybooking.Objects.CurrentBookingSingleton;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
@@ -19,10 +20,10 @@ public class MailSender {
 //Lukas er sej
 
 
-    public static void sendTestMail() throws IOException {
+    public static void sendReceiptToCustomer() throws IOException {
 
         // Recipient's email
-        String to = "sunwar01@easv365.dk";
+        String to = CurrentBookingSingleton.getInstance().getCustomer().getEmail();
 
         // Sender's email
         String from = "MindFactory@ecco.dk";
@@ -72,17 +73,17 @@ public class MailSender {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
             // Set Subject: header field
-            message.setSubject("MindFactory Booking report");
+            message.setSubject("MindFactory Booking kode");
 
             // Now set the actual message
-            message.setText("This is actual message");
+            message.setText("Din kode er: " + CurrentBookingSingleton.getInstance().getBooking().hashCode());
 
 
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
 
             // Now set the actual message
-            messageBodyPart.setText("I sent this from my Java app!");
+            messageBodyPart.setText("hvis du vil ændre i din booking, skal du bruge denne kode: ");
 
 // Create a multipar message
             Multipart multipart = new MimeMultipart();

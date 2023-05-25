@@ -85,9 +85,9 @@ public class FinalizeController {
             }
         });
 
-        //TODO: Send email to customer and organization
-        MailSender mailSender = new MailSender();
-        //mailSender.sendMailToCustomer();
+        // Send email to customer and organization
+        //MailSender mailSender = new MailSender();
+        //mailSender.sendReceiptToCustomer();
 
 
         //TODO: Send email to AS???
