@@ -479,27 +479,6 @@ public class CalendarController {
         //bookingRectangle isnt used anymore
         //we should discuss if we want to keep it or not
 
-        stack.setOnMouseClicked(event -> {
-            CurrentBookingSingleton.getInstance().setCurrentBooking(booking);
-
-
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (event.getClickCount() == 2) {
-
-                    CurrentBookingSingleton.getInstance().setCurrentBooking(booking);
-                    CurrentBookingSingleton.getInstance().setCustomer(booking.getCustomer());
-                    CurrentBookingSingleton.getInstance().setCurrentOrganization(booking.getCustomer().getOrganisation());
-
-                    CurrentBookingSingleton.getInstance().setIsEdit(true);
-
-                    loadBookingUI();
-
-
-                }
-            }
-
-
-        });
 
 
     }
