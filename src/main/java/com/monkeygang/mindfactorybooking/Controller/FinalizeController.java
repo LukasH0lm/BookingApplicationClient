@@ -73,6 +73,7 @@ public class FinalizeController {
     void onDoneButtonClick(ActionEvent event) throws SQLException, IOException {
 
         //TODO: Save booking to database
+        //CurrentBookingSingleton currentBookingSingleton = CurrentBookingSingleton.getInstance();
 
         DatabaseUpdaterSingleton databaseUpdaterSingleton = DatabaseUpdaterSingleton.getInstance();
 
@@ -87,6 +88,20 @@ public class FinalizeController {
             }
         });
 
+
+
+        /*Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+
+        String bookingCode = String.valueOf(currentBookingSingleton.getBooking().hashCode());
+        content.putString(bookingCode);
+
+        clipboard.setContent(content);*/
+
+
+
+
+
         // Send email to customer and organization
         //MailSender mailSender = new MailSender();
         //mailSender.sendReceiptToCustomer();
@@ -96,7 +111,7 @@ public class FinalizeController {
 
         //mailSender.sendMailToAdmin();
 
-        sendReceiptToCustomer();
+        //sendReceiptToCustomer();
 
         //Show confirmation message
 
