@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static com.monkeygang.mindfactorybooking.utility.MailSender.sendReceiptToCustomer;
+
 public class FinalizeController {
 
 
@@ -94,6 +96,7 @@ public class FinalizeController {
 
         //mailSender.sendMailToAdmin();
 
+        sendReceiptToCustomer();
 
         //Show confirmation message
 
