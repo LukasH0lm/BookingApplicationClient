@@ -222,7 +222,9 @@ public class CurrentBookingSingleton {
     }
 
 
+    public void setIsTemporary(boolean b) {
 
+        isTemporary = b;
 
-
+    }
 }
