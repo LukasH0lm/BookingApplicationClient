@@ -87,16 +87,6 @@
                   <Image url="@../logo.jpg" />
                </image>
             </ImageView>
-            <Button fx:id="cDashboardButton" layoutX="201.0" layoutY="38.0" mnemonicParsing="false" onAction="#onDashboardButtonClick" style="-fx-background-color: #121111;" text="Dashboard" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button layoutX="282.0" layoutY="38.0" mnemonicParsing="false" style="-fx-background-color: #121111;" text="Kalender" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
       <Button fx:id="nextWeekButton" layoutX="643.0" layoutY="196.0" mnemonicParsing="false" onAction="#nextWeekButtonPressed" prefHeight="20.0" prefWidth="25.0" text="&gt;" />
