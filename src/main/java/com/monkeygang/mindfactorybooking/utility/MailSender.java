@@ -114,6 +114,12 @@ public class MailSender {
 
     }
 
+    public static void sendNotificationToAdmin() throws IOException {
+
+
+        //TODO: send mail to ASS
+
+    }
 }
 
 
