@@ -422,23 +422,6 @@ public class CalendarController {
         Rectangle bookingRectangle = new Rectangle(100, rectangleHeight);
         bookingRectangle.setFill(Color.RED);
 
-        Organization currentOrganization = bookingDAO.getOrganisation(booking);
-
-
-
-        Label bookingLabel = new Label(currentOrganization.getName());
-
-
-
-        bookingLabel.setAlignment(Pos.CENTER);
-
-
-        bookingLabel.setTextFill(Paint.valueOf("white"));
-        bookingLabel.setMaxWidth(45); // 50 - 5 to give the text to space to breathe
-        bookingLabel.setWrapText(true);
-
-
-
 
         int activityID = booking_activityDao.getActivityIDbyBookingID(booking.getId());
 
@@ -468,7 +451,7 @@ public class CalendarController {
         activityIcon.setTranslateX(35);
         activityIcon.setTranslateY(- ((rectangleHeight / 2) - 7));
 
-        StackPane stack = new StackPane(bookingRectangle, bookingLabel, activityIcon);
+        StackPane stack = new StackPane(bookingRectangle, activityIcon);
 
         stack.setLayoutY(rectangleYStartPosition);
         stack.setPrefHeight(rectangleHeight);
